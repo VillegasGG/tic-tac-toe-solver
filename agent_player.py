@@ -10,7 +10,6 @@ This player can:
 import numpy as np
 from math import inf
 import pickle
-
 class AgentPlayer:
     def __init__(self, name, epsilon=0):
         self.name = name
@@ -32,11 +31,12 @@ class AgentPlayer:
             for a in actions:
                 next_env = env.clone()
                 next_env.step(a)
-                board = next_env.get_observation(player)
+                board = tuple(next_env.get_observation(player).flatten())
 
                 if self.state_values.get(board) is None:
                     value = 0
                 else:
+                    print('State found!')
                     value = self.state_values[board]
 
                 if value > max_value:
@@ -44,6 +44,9 @@ class AgentPlayer:
                     action = a
 
         return action
+    
+    def addState(self, state):
+        self.states.append(state)
     
     def feedReward(self, reward):
         for state in reversed(self.states):
@@ -62,3 +65,7 @@ class AgentPlayer:
         self.state_values = pickle.load(file_r)
         file_r.close()
         print('Policy loaded')
+
+
+
+
