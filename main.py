@@ -1,5 +1,6 @@
 from tictactoe_gym.envs.tictactoe_env import TicTacToeEnv
 from human_player import HumanPlayer
+from agent_player import AgentPlayer
 
 def main():
     env = TicTacToeEnv()
@@ -7,12 +8,12 @@ def main():
 
     terminal = False
 
-    human1 = HumanPlayer('Human1')
-    human2 = HumanPlayer('Human2')
+    player1 = HumanPlayer('Human1')
+    player2 = AgentPlayer('Bot')
 
     
     while not terminal:
-        action = human1.choose_move(env)
+        action = player1.choose_action(env)
         _, winner, terminal, _, _ = env.step(action)
         env.render()
 
@@ -21,9 +22,9 @@ def main():
             if winner == 0:
                 print('Draw')
             elif winner > 0:
-                print(f'Winner: {human1.name}')
+                print(f'Winner: {player1.name}')
 
-        action = human2.choose_move(env)
+        action = player2.choose_action(env)
         _, winner, terminal, _, _= env.step(action) 
         env.render()
 
@@ -32,7 +33,7 @@ def main():
             if winner == 0:
                 print('Draw')
             elif winner < 0:
-                print(f'Winner: {human2.name}')
+                print(f'Winner: {player2.name}')
        
 
 if __name__ == '__main__':
