@@ -1,10 +1,13 @@
 from tictactoe_gym.envs.tictactoe_env import TicTacToeEnv
 from agent_player import AgentPlayer
 
-def play(rounds=1):
+def play(rounds=100):
     """
     The agent plays against itself for a number of rounds
     """
+    player1 = AgentPlayer('Bot1')
+    player2 = AgentPlayer('Bot2')
+
     for _ in range(rounds):
         env = TicTacToeEnv()
         env.reset()
@@ -13,9 +16,6 @@ def play(rounds=1):
 
         print('Playing...')
         print('Round:', _+1)
-
-        player1 = AgentPlayer('Bot1')
-        player2 = AgentPlayer('Bot2')
 
         while not terminal:
 
@@ -27,7 +27,7 @@ def play(rounds=1):
             player1.addState(tuple(env.get_observation(1).flatten()))
             env.render()
 
-            if winner == 1:
+            if terminal:
                 result = env.get_result(1)
                 print('Winner: Player 1')
                 if result == 1:
@@ -46,7 +46,7 @@ def play(rounds=1):
             player2.addState(tuple(env.get_observation(-1).flatten()))
             env.render()
 
-            if winner == -1:
+            if terminal:
                 result = env.get_result(-1)
                 print('Winner: Player 2')
                 if result == 1:
@@ -56,6 +56,10 @@ def play(rounds=1):
                 else:
                     player2.feedReward(0)
                 break
+
+        # At the end of the game, show the policy
+        # print('Player 1 policy:', player1.showPolicy())
+        # print('Player 2 policy:', player2.showPolicy())
 
             
 play()

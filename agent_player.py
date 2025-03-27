@@ -11,7 +11,7 @@ import numpy as np
 from math import inf
 import pickle
 class AgentPlayer:
-    def __init__(self, name, epsilon=0):
+    def __init__(self, name, epsilon=0.4):
         self.name = name
         self.states = []    # All positions taken during each game
         self.epsilon = epsilon
@@ -37,6 +37,8 @@ class AgentPlayer:
                     value = 0
                 else:
                     print('State found!')
+                    self.showBoard(board)
+                    print('Value:', self.state_values[board])
                     value = self.state_values[board]
 
                 if value > max_value:
@@ -65,6 +67,18 @@ class AgentPlayer:
         self.state_values = pickle.load(file_r)
         file_r.close()
         print('Policy loaded')
+
+    def showBoard(self, tuple):
+        board = np.array(tuple).reshape(3, 3)
+        print(board)
+
+    def showPolicy(self):
+        print('Policy: ')
+        for key in self.state_values:
+            self.showBoard(key)
+            print('Value:', self.state_values[key])
+            print('-------------------')
+
 
 
 
