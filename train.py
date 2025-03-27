@@ -61,6 +61,9 @@ def play(rounds=100):
         # print('Player 1 policy:', player1.showPolicy())
         # print('Player 2 policy:', player2.showPolicy())
 
+    # Save the policy
+    player1.savePolicy()
+    player2.savePolicy()
             
 play()
 
