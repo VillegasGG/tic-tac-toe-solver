@@ -11,7 +11,7 @@ import numpy as np
 from math import inf
 import pickle
 class AgentPlayer:
-    def __init__(self, name, epsilon=0.4):
+    def __init__(self, name, epsilon=0.3):
         self.name = name
         self.states = []    # All positions taken during each game
         self.epsilon = epsilon
@@ -36,9 +36,9 @@ class AgentPlayer:
                 if self.state_values.get(board) is None:
                     value = 0
                 else:
-                    print('State found!')
-                    self.showBoard(board)
-                    print('Value:', self.state_values[board])
+                    # print('State found!')
+                    # self.showBoard(board)
+                    # print('Value:', self.state_values[board])
                     value = self.state_values[board]
 
                 if value > max_value:
@@ -57,13 +57,13 @@ class AgentPlayer:
             self.state_values[state] += self.lr * (self.gamma * reward - self.state_values[state])
             reward = self.state_values[state]
 
-    def savePolicy(self):
-        file_w = open('policy.pkl', 'wb')
+    def savePolicy(self, name):
+        file_w = open(name, 'wb')
         pickle.dump(self.state_values, file_w)
         file_w.close()
 
-    def loadPolicy(self):
-        file_r = open('policy.pkl', 'rb')
+    def loadPolicy(self, name=''):
+        file_r = open(name, 'rb')
         self.state_values = pickle.load(file_r)
         file_r.close()
         print('Policy loaded')
