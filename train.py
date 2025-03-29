@@ -1,7 +1,7 @@
 from tictactoe import TicTacToeEnv
 from agent_player import AgentPlayer
 
-def play(rounds=10000):
+def play(rounds=50000, show=False):
     """
     The agent plays against itself for a number of rounds
     """
@@ -25,7 +25,7 @@ def play(rounds=10000):
 
             _, winner, terminal, _, _ = env.step(action)
             player1.addState(tuple(env.get_observation(1).flatten()))
-            env.render()
+            env.render(show)
 
             if terminal:
                 result = env.get_result(1)
@@ -42,7 +42,7 @@ def play(rounds=10000):
 
             _, winner, terminal, _, _ = env.step(action)
             player2.addState(tuple(env.get_observation(-1).flatten()))
-            env.render()
+            env.render(show)
 
             if terminal:
                 result = env.get_result(-1)

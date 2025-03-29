@@ -398,7 +398,7 @@ class TicTacToeEnv(Env):
 
         return copy.deepcopy(self)
 
-    def render(self):
+    def render(self, show=True):
         """
         Renders the current observation in the terminal as a string.
 
@@ -419,5 +419,7 @@ class TicTacToeEnv(Env):
                 else:
                     row += "-"
             row += "\n"
-            render_game += row            
-        print(render_game)
+            render_game += row 
+
+        if(show):          
+            print(render_game)
