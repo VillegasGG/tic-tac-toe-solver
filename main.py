@@ -48,7 +48,7 @@ def human_vs_bot():
     player1 = HumanPlayer('Human1')
     player2 = AgentPlayer('Bot')
 
-    player2.loadPolicy('policy1.pkl')
+    player2.loadPolicy('policy2.pkl')
 
     while not terminal:
         # Human

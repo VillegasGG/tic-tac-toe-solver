@@ -1,22 +1,23 @@
 from tictactoe import TicTacToeEnv
 from agent_player import AgentPlayer
+from tqdm import tqdm
+
+epsilon = 1.0
+min_epsilon = 0.01
+decay = 0.995
 
 def play(rounds=50000, show=False):
     """
     The agent plays against itself for a number of rounds
     """
-    player1 = AgentPlayer('Bot1')
-    player2 = AgentPlayer('Bot2')
+    player1 = AgentPlayer('Bot1', epsilon=epsilon)
+    player2 = AgentPlayer('Bot2', epsilon=epsilon)
 
-    for _ in range(rounds):
+    for _ in tqdm(range(rounds)):
         env = TicTacToeEnv()
         env.reset()
             
         terminal = False
-
-        if _ % 1000 == 0:
-            print('Playing...')
-            print('Round:', _+1)
 
         while not terminal:
 
@@ -54,9 +55,12 @@ def play(rounds=50000, show=False):
                     player2.feedReward(0)
                 break
 
-        # At the end of the game, show the policy
-        # print('Player 1 policy:', player1.showPolicy())
-        # print('Player 2 policy:', player2.showPolicy())
+        player1.epsilon = max(min_epsilon, player1.epsilon * decay)
+        player2.epsilon = max(min_epsilon, player2.epsilon * decay)
+
+        # Show epsilon value
+        if _ % 1000 == 0:
+            print(f'Epsilon for Player 1: {player1.epsilon}, Player 2: {player2.epsilon}')
 
     # Save the policy
     player1.savePolicy('policy1.pkl')
