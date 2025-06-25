@@ -10,6 +10,7 @@ This player can:
 import numpy as np
 from math import inf
 import pickle
+from board_transformations import canonical_board
 class AgentPlayer:
     def __init__(self, name, epsilon=0.01):
         self.name = name
@@ -31,12 +32,14 @@ class AgentPlayer:
             for a in actions:
                 next_env = env.clone()
                 next_env.step(a)
-                board = tuple(next_env.get_observation(player).flatten())
 
-                if self.state_values.get(board) is None:
+                board = tuple(next_env.get_observation(player).flatten())
+                canon = canonical_board(board)
+
+                if self.state_values.get(canon) is None:
                     value = 0
                 else:
-                    value = self.state_values[board]
+                    value = self.state_values[canon]
 
                 if value > max_value:
                     max_value = value
@@ -65,15 +68,15 @@ class AgentPlayer:
         file_r.close()
         print('Policy loaded')
         print('States:', len(self.state_values))
-        print('-------------------')
-        print('Policy: ')
-        for i in range(10):
-            print('-------------------')
-            key = list(self.state_values.keys())[i]
-            self.showBoard(key)
-            print('Value:', self.state_values[key])
-            print('-------------------')
-        print('-------------------')
+        # print('-------------------')
+        # print('Policy: ')
+        # for i in range(10):
+        #     print('-------------------')
+        #     key = list(self.state_values.keys())[i]
+        #     self.showBoard(key)
+        #     print('Value:', self.state_values[key])
+        #     print('-------------------')
+        # print('-------------------')
 
     def showBoard(self, tuple):
         board = np.array(tuple).reshape(3, 3)

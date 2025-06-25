@@ -3,6 +3,8 @@ from agent_player import AgentPlayer
 from tqdm import tqdm
 from collections import deque
 import pickle
+import random
+from board_transformations import canonical_board
 
 def play(rounds=50000, show=False):
     """
@@ -20,8 +22,8 @@ def play(rounds=50000, show=False):
     rewards = deque(maxlen=1000)
     avg_rewards = []
 
-    player1 = AgentPlayer('Bot1', epsilon=epsilon)
-    player2 = AgentPlayer('Bot2', epsilon=epsilon)
+    # Agent will play against itself
+    agent = AgentPlayer('Bot', epsilon=epsilon)
 
     for episode in tqdm(range(rounds)):
         env = TicTacToeEnv()
@@ -29,48 +31,46 @@ def play(rounds=50000, show=False):
             
         terminal = False
 
+        # Define agent role for this episode
+        if episode % 2 == 0:
+            agent_role = 1  # Agent is 1
+            opponent_role = -1  
+        else:
+            agent_role = -1  # Agent is -1
+            opponent_role = 1
+
         while not terminal:
+            current_player = env._player
 
-            # Player 1
-            action = player1.choose_action(env)
-
+            if current_player == agent_role:
+                action = agent.choose_action(env)
+            else:
+                action = random.choice(env.get_actions())
+            
             _, winner, terminal, _, _ = env.step(action)
-            player1.addState(tuple(env.get_observation(1).flatten()))
-            env.render(show)
 
+            if current_player == agent_role:
+                board = tuple(env.get_observation(agent_role).flatten())
+                canon = canonical_board(board)
+                agent.addState(canon)
+                
             if terminal:
-                result = env.get_result(1)
+                result = env.get_result(agent_role)
                 if result == 1:
-                    player1.feedReward(1)
+                    agent.feedReward(1)
                 elif result == -1:
-                    player1.feedReward(-1)
+                    agent.feedReward(-1)
                 else:
-                    player1.feedReward(0)
+                    agent.feedReward(0)
+
+                agent.states = [] 
                 break
 
-            # Player 2
-            action = player2.choose_action(env)
+        agent.epsilon = max(min_epsilon, agent.epsilon * decay)
 
-            _, winner, terminal, _, _ = env.step(action)
-            player2.addState(tuple(env.get_observation(-1).flatten()))
-            env.render(show)
-
-            if terminal:
-                result = env.get_result(-1)
-                if result == 1:
-                    player2.feedReward(1)
-                elif result == -1:
-                    player2.feedReward(-1)
-                else:
-                    player2.feedReward(0)
-                break
-
-        player1.epsilon = max(min_epsilon, player1.epsilon * decay)
-        player2.epsilon = max(min_epsilon, player2.epsilon * decay)
-        
         rewards.append(result)
-
         results.append(result)
+
         if len(results) >= 1000 and episode % 1000 == 0:
             winrate = results.count(1) / 1000
             if(last_winrate is not None):
@@ -78,16 +78,15 @@ def play(rounds=50000, show=False):
                 print(f'\nLast Winrate: {last_winrate:.2f}, Current Winrate: {winrate:.2f}')
                 diff = abs(winrate - last_winrate)
                 print(f'Difference: {diff:.4f}')
-                print(f'Epsilon: {player1.epsilon:.4f}, Rewards: {sum(rewards) / 1000:.2f}')
-                if diff < threshold and winrate >= last_winrate:
+                print(f'Epsilon: {agent.epsilon:.4f}, Rewards: {sum(rewards) / 1000:.2f}')
+                if diff < threshold and winrate >= last_winrate and winrate >= 0.8:
                     print(f'\nWinrate stabilized at {winrate:.2f}, stopping training.')
                     break
             last_winrate = winrate
             avg_rewards.append(sum(rewards) / 1000)
 
     # Save the policy
-    player1.savePolicy('policy1.pkl')
-    player2.savePolicy('policy2.pkl')
+    agent.savePolicy('policy.pkl')
 
     with open('avg_rewards.pkl', 'wb') as f:
         pickle.dump(avg_rewards, f)
