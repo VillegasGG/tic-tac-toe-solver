@@ -15,7 +15,7 @@ def play(rounds=50000, show=False):
 
     results = deque(maxlen=1000)
     last_winrate = None
-    threshold = 0.1
+    threshold = 0.01
 
     rewards = deque(maxlen=1000)
     avg_rewards = []
@@ -74,17 +74,16 @@ def play(rounds=50000, show=False):
         if len(results) >= 1000 and episode % 1000 == 0:
             winrate = results.count(1) / 1000
             if(last_winrate is not None):
+                print(f'\nEPISODE {episode}')
                 print(f'\nLast Winrate: {last_winrate:.2f}, Current Winrate: {winrate:.2f}')
                 diff = abs(winrate - last_winrate)
                 print(f'Difference: {diff:.4f}')
+                print(f'Epsilon: {player1.epsilon:.4f}, Rewards: {sum(rewards) / 1000:.2f}')
                 if diff < threshold and winrate >= last_winrate:
                     print(f'\nWinrate stabilized at {winrate:.2f}, stopping training.')
                     break
             last_winrate = winrate
             avg_rewards.append(sum(rewards) / 1000)
-
-        if episode % 1000 == 0:
-            print(f'\nRound {episode}, Winrate: {results.count(1) / len(results):.2f}, Epsilon: {player1.epsilon:.4f}')
 
     # Save the policy
     player1.savePolicy('policy1.pkl')
