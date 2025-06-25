@@ -48,7 +48,7 @@ def human_vs_bot():
     player1 = HumanPlayer('Human1')
     player2 = AgentPlayer('Bot')
 
-    player2.loadPolicy('policy2.pkl')
+    player2.loadPolicy('policy1.pkl')
 
     while not terminal:
         # Human
@@ -75,11 +75,49 @@ def human_vs_bot():
                 print('Draw')
             break
 
+def bot_vs_human():
+    """Bot vs Human game mode where the bot plays first."""
+    env = TicTacToeEnv()
+    env.reset()
+
+    terminal = False
+
+    player1 = AgentPlayer('Bot')
+    player2 = HumanPlayer('Human1')
+
+    player1.loadPolicy('policy1.pkl')
+
+    while not terminal:
+        # Bot
+        action = player1.choose_action(env)
+        _, winner, terminal, _, _ = env.step(action)
+        env.render()
+
+        if terminal:
+            if winner < 0:
+                print(f'Winner: {player1.name}')
+            else:
+                print('Draw')
+            break
+
+        # Human
+        action = player2.choose_action(env)
+        _, winner, terminal, _, _ = env.step(action)
+        env.render()
+
+        if terminal:
+            if winner > 0:
+                print(f'Winner: {player2.name}')
+            else:
+                print('Draw')
+            break
+
 def main():
     
     #human_vs_human()
 
-    human_vs_bot()
+    # human_vs_bot()
+    bot_vs_human()
    
        
 
