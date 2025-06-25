@@ -24,11 +24,9 @@ class AgentPlayer:
         player = env._player
 
         if np.random.uniform(0, 1) <= self.epsilon:
-            print('Exploration')
             action = np.random.choice(actions)
 
         else:
-            print('Exploitation')
             max_value = -inf
             for a in actions:
                 next_env = env.clone()
@@ -38,9 +36,6 @@ class AgentPlayer:
                 if self.state_values.get(board) is None:
                     value = 0
                 else:
-                    print('State found!')
-                    self.showBoard(board)
-                    print('Value:', self.state_values[board])
                     value = self.state_values[board]
 
                 if value > max_value:
