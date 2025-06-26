@@ -57,7 +57,7 @@ def human_vs_bot():
         env.render()
 
         if terminal:
-            if winner > 0:
+            if winner != 0:
                 print(f'Winner: {player1.name}')
             else:
                 print('Draw')
@@ -94,7 +94,7 @@ def bot_vs_human():
         env.render()
 
         if terminal:
-            if winner < 0:
+            if winner != 0:
                 print(f'Winner: {player1.name}')
             else:
                 print('Draw')
@@ -114,10 +114,10 @@ def bot_vs_human():
 
 def main():
     
-    #human_vs_human()
+    # human_vs_human()
 
-    human_vs_bot()
-    #bot_vs_human()
+    # human_vs_bot()
+    bot_vs_human()
    
        
 

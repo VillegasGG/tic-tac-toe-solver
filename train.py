@@ -79,7 +79,7 @@ def play(rounds=50000, show=False):
                 diff = abs(winrate - last_winrate)
                 print(f'Difference: {diff:.4f}')
                 print(f'Epsilon: {agent.epsilon:.4f}, Rewards: {sum(rewards) / 1000:.2f}')
-                if diff < threshold and winrate >= last_winrate and winrate >= 0.8:
+                if diff < threshold and winrate >= last_winrate and winrate >= 0.98:
                     print(f'\nWinrate stabilized at {winrate:.2f}, stopping training.')
                     break
             last_winrate = winrate
