@@ -6,12 +6,13 @@ import pickle
 import random
 from board_transformations import canonical_board
 
-def play(rounds=50000, show=False):
+def play(rounds=20000, show=False):
     """
     The agent plays against itself for a number of rounds
     """
+    total_rewards = [] # Total rewards accumulated during the training for graphing purposes
 
-    epsilon = 1.0
+    epsilon = 0.1
     min_epsilon = 0.01
     decay = 0.995
 
@@ -66,7 +67,7 @@ def play(rounds=50000, show=False):
                 agent.states = [] 
                 break
 
-        agent.epsilon = max(min_epsilon, agent.epsilon * decay)
+        # agent.epsilon = max(min_epsilon, agent.epsilon * decay)
 
         rewards.append(result)
         results.append(result)
@@ -79,17 +80,23 @@ def play(rounds=50000, show=False):
                 diff = abs(winrate - last_winrate)
                 print(f'Difference: {diff:.4f}')
                 print(f'Epsilon: {agent.epsilon:.4f}, Rewards: {sum(rewards) / 1000:.2f}')
-                if diff < threshold and winrate >= last_winrate and winrate >= 0.98:
-                    print(f'\nWinrate stabilized at {winrate:.2f}, stopping training.')
-                    break
+                # if diff < threshold and winrate >= last_winrate and winrate >= 0.90:
+                #     print(f'\nWinrate stabilized at {winrate:.2f}, stopping training.')
+                #     break
             last_winrate = winrate
             avg_rewards.append(sum(rewards) / 1000)
+        
+        total_rewards.append(result)
 
     # Save the policy
-    agent.savePolicy('policy.pkl')
+    agent.savePolicy('policy3.pkl')
 
-    with open('avg_rewards.pkl', 'wb') as f:
+    with open('avg_rewards3.pkl', 'wb') as f:
         pickle.dump(avg_rewards, f)
+    
+    # Save total rewards
+    with open('total_rewards_ep3.pkl', 'wb') as f:
+        pickle.dump(total_rewards, f)
             
 play()
 

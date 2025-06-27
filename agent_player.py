@@ -12,13 +12,17 @@ from math import inf
 import pickle
 from board_transformations import canonical_board
 class AgentPlayer:
-    def __init__(self, name, epsilon=0.01):
+    def __init__(self, name, epsilon, policy_data=None):
         self.name = name
         self.states = []    # All positions taken during each game
         self.epsilon = epsilon
         self.gamma = 0.9   
         self.lr = 0.2
-        self.state_values = {}
+
+        if policy_data is not None:
+            self.state_values = policy_data
+        else:
+            self.state_values = {}
 
     def choose_action(self, env):
         actions = env.get_actions()
